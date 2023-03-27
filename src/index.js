@@ -33,7 +33,7 @@ countryElement.innerHTML = response.data.country;
 descriptionElement.innerHTML = response.data.condition.description;
 humidityElement.innerHTML = response.data.temperature.humidity;
 windElement.innerHTML = Math.round(response.data.wind.speed * 3.6);
-dateElemnent.innerHTML = formatDate(response.data.time*1000);
+dateElemnent.innerHTML = formatDate(response.data.time * 1000);
 iconElement.setAttribute("src", response.data.condition.icon_url);
 iconElement.setAttribute("alt", response.data.condition.icon);
 }
@@ -48,6 +48,21 @@ function handleSubmit(event) {
   event.preventDefault();
   let cityInputElement = document.querySelector("#city-input");
   search(cityInputElement.value);
+}
+
+function searchLocation(position) {
+console.log(position);
+let lon = position.coords.longitude;
+let lat = position.coords.latitude;
+let apiKey = "3c48a60cea5at02a4bc6bf4c51bo5096";
+let apiUrl = `https://api.shecodes.io/weather/v1/current?lon=${lon}&lat=${lat}&key=${apiKey}&units=metric`;
+axios.get(apiUrl).then(displayTemperature);
+ 
+}
+
+function getCurrentLocation(event){
+event.preventDefault();
+navigator.geolocation.getCurrentPosition(searchLocation);
 }
 
 function displayFarenheitTemperature(event) {
@@ -79,5 +94,8 @@ farenheitLink.addEventListener("click", displayFarenheitTemperature);
 
 let celsiusLink = document.querySelector("#celsius-link");
 celsiusLink.addEventListener("click", displayCelsiusTemperature);
+
+let currentLocation = document.querySelector("#current-btn");
+currentLocation.addEventListener("click", getCurrentLocation);
 
 search("Auckland");
