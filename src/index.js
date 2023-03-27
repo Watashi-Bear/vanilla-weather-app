@@ -14,7 +14,7 @@ let day = days[date.getDay()];
 return `${day} ${hours}:${minutes}`;
 }
 
-function displayTemp(response){
+function displayTemperature(response){
   console.log(response);
 let temperatureElement = document.querySelector("#temperature");
 let cityElement = document.querySelector("#city");
@@ -25,7 +25,9 @@ let windElement = document.querySelector("#wind");
 let dateElemnent = document.querySelector("#date");
 let iconElement = document.querySelector("#weatherIcon");
 
-temperatureElement.innerHTML = Math.round(response.data.temperature.current);
+celsiusTemperature = response.data.temperature.current;
+
+temperatureElement.innerHTML = Math.round(celsiusTemperature);
 cityElement.innerHTML = response.data.city;
 countryElement.innerHTML = response.data.country;
 descriptionElement.innerHTML = response.data.condition.description;
@@ -39,7 +41,7 @@ iconElement.setAttribute("alt", response.data.condition.icon);
 function search(city) {
 let apiKey = "3c48a60cea5at02a4bc6bf4c51bo5096";
 let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
-axios.get(apiUrl).then(displayTemp);
+axios.get(apiUrl).then(displayTemperature);
 }
 
 function handleSubmit(event) {
@@ -48,7 +50,34 @@ function handleSubmit(event) {
   search(cityInputElement.value);
 }
 
+function displayFarenheitTemperature(event) {
+  event.preventDefault();
+  let temperatureElement = document.querySelector("#temperature");
+  
+  celsiusLink.classList.remove("active");
+  farenheitLink.classList.add("active");
+  let farenheitTemperature = (celsiusTemperature*9)/5+32;
+  temperatureElement.innerHTML = Math.round(farenheitTemperature);
+}
+
+function displayCelsiusTemperature(event) {
+event.preventDefault();
+celsiusLink.classList.add("active");
+farenheitLink.classList.remove("active");
+let temperatureElement = document.querySelector("#temperature");
+temperatureElement.innerHTML = Math.round(celsiusTemperature);
+}
+
+let celsiusTemperature = null;
+//fix buttons to then do a current temperature button
+
 let form = document.querySelector("#search-form");
 form.addEventListener("submit", handleSubmit);
+
+let farenheitLink = document.querySelector("#farenheit-link");
+farenheitLink.addEventListener("click", displayFarenheitTemperature);
+
+let celsiusLink = document.querySelector("#celsius-link");
+celsiusLink.addEventListener("click", displayCelsiusTemperature);
 
 search("Auckland");
