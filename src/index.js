@@ -1,4 +1,4 @@
-function formatDate(timestamp){
+function formatDate(timestamp) {
 let date = new Date(timestamp);
 let hours = date.getHours();
 if (hours < 10) {
@@ -20,6 +20,8 @@ let temperatureElement = document.querySelector("#temperature");
 let cityElement = document.querySelector("#city");
 let countryElement = document.querySelector("#country");
 let descriptionElement = document.querySelector("#description");
+let humidityElement = document.querySelector("#humidity");
+let windElement = document.querySelector("#wind");
 let dateElemnent = document.querySelector("#date");
 let iconElement = document.querySelector("#weatherIcon");
 
@@ -27,6 +29,8 @@ temperatureElement.innerHTML = Math.round(response.data.temperature.current);
 cityElement.innerHTML = response.data.city;
 countryElement.innerHTML = response.data.country;
 descriptionElement.innerHTML = response.data.condition.description;
+humidityElement.innerHTML = response.data.temperature.humidity;
+windElement.innerHTML = Math.round(response.data.wind.speed * 3.6);
 dateElemnent.innerHTML = formatDate(response.data.time*1000);
 iconElement.setAttribute("src", response.data.condition.icon_url);
 iconElement.setAttribute("alt", response.data.condition.icon);
@@ -40,7 +44,7 @@ axios.get(apiUrl).then(displayTemp);
 
 function handleSubmit(event) {
   event.preventDefault();
-  let cityInputElement = document.querySelector("#city");
+  let cityInputElement = document.querySelector("#city-input");
   search(cityInputElement.value);
 }
 
