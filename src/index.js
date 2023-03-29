@@ -14,28 +14,48 @@ let day = days[date.getDay()];
 return `${day} ${hours}:${minutes}`;
 }
 
-function displayForecast(){
+function formatDate(timestamp){
+let date = new Date(timestamp * 1000);
+let day = date.getDay();
+let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+return days[day];
+}
+
+function displayForecast(response){
+let forecast = response.data.daily;
 let forecastElement = document.querySelector("#forecast");
 
-let days = ["Wed", "Thu", "Fri", "Sat", "Sun"];
 let forecastHTML = `<div class="row">`;
-days.forEach(function(day) {
-forecastHTML = forecastHTML + `
+forecast.forEach(function(forecastDay, index) {
+  if (index < 6) {
+forecastHTML = forecastHTML + 
+`
   <div class="col-2">
-    <div class="weather-forecast-date">${day}</div>
-    <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/broken-clouds-night.png" alt="" width="45px">              
+    <div class="weather-forecast-date">${formatDate(forecastDay.time)}</div>
+    <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${forecastDay.condition.icon}.png" alt="" width="45px">              
     <div class="weather-forecast-temperature">
-      <span class="weather-forecast-temperature-max">12°</span>|
-      <span class="weather-forecast-temperature-min">2°</span>
+      <span class="weather-forecast-temperature-max">${Math.round(forecastDay.temperature.maximum)}°</span>|
+      <span class="weather-forecast-temperature-min">${Math.round(forecastDay.temperature.minimum)}°</span>
     </div>
   </div>
 `;
+}
 });
+
 forecastHTML = forecastHTML + `</div>`;
 forecastElement.innerHTML = forecastHTML;
 }
 
+function getForecast(coordinates){
+  console.log(coordinates);
+let apiKey = "3c48a60cea5at02a4bc6bf4c51bo5096";
+let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=metric`
+axios.get(apiUrl).then(displayForecast);
+}
+
 function displayTemperature(response){
+  console.log(response.data);
 let temperatureElement = document.querySelector("#temperature");
 let cityElement = document.querySelector("#city");
 let countryElement = document.querySelector("#country");
@@ -56,6 +76,8 @@ windElement.innerHTML = Math.round(response.data.wind.speed * 2.2369362912);
 dateElemnent.innerHTML = formatDate(response.data.time * 1000);
 iconElement.setAttribute("src", response.data.condition.icon_url);
 iconElement.setAttribute("alt", response.data.condition.icon);
+
+getForecast(response.data.coordinates);
 }
 
 function search(city) {
@@ -103,8 +125,6 @@ temperatureElement.innerHTML = Math.round(celsiusTemperature);
 }
 
 let celsiusTemperature = null;
-
-displayForecast();
 
 let form = document.querySelector("#search-form");
 form.addEventListener("submit", handleSubmit);
