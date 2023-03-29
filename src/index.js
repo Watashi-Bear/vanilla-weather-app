@@ -14,12 +14,12 @@ let day = days[date.getDay()];
 return `${day} ${hours}:${minutes}`;
 }
 
-function formatDate(timestamp){
-let date = new Date(timestamp * 1000);
-let day = date.getDay();
-let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+function formatDay(timestamp){
+let forecastDate = new Date(timestamp * 1000);
+let forecastDay = forecastDate.getDay();
+let forecastDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-return days[day];
+return forecastDays[forecastDay];
 }
 
 function displayForecast(response){
@@ -32,7 +32,7 @@ forecast.forEach(function(forecastDay, index) {
 forecastHTML = forecastHTML + 
 `
   <div class="col-2">
-    <div class="weather-forecast-date">${formatDate(forecastDay.time)}</div>
+    <div class="weather-forecast-date">${formatDay(forecastDay.time)}</div>
     <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${forecastDay.condition.icon}.png" alt="" width="45px">              
     <div class="weather-forecast-temperature">
       <span class="weather-forecast-temperature-max">${Math.round(forecastDay.temperature.maximum)}°</span>|
